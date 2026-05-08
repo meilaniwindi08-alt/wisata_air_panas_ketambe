@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Website Pariwisata</title>
+    <link rel="stylesheet" href="stylelogin.css">
+
+    <style>
+    body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Background blur */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    
+    background: url("bg.jpg") no-repeat center center/cover;
+
+    filter: blur(8px);
+    z-index: -1;
+}
+
+/* Kotak login */
+.login-container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Judul */
+.login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Input */
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Tombol */
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Efek hover */
+.login-container button:hover {
+    background: #45a049;
+}
+
+/* Teks bawah */
+.info {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 14px;
+}</style>
+<script>
+function loginUser() {
+
+    var usernameBenar = "admin";
+    var passwordBenar = "12345";
+
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+
+    if (username === usernameBenar && password === passwordBenar) {
+
+        alert("Login Berhasil!");
+        window.location.href = "admin.html"; // arahkan ke dashboard admin
+
+    } else {
+
+        alert("Username atau Password salah!");
+
+    }
+
+}
+</script>
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <h2>Login Website Pariwisata</h2>
+
+    <form onsubmit="event.preventDefault(); loginUser();">
+
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Masukkan Username" required>
+
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Masukkan Password" required>
+
+        <button type="submit">Login</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

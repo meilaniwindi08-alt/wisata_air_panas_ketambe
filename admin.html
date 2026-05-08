@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<style>
+:root {
+    --hijau-utama: #2e7d32;
+    --hijau-muda: #66bb6a;
+    --hijau-bg: #e8f5e9;
+    --coklat: #6d4c41;
+    --putih: #ffffff;
+}
+
+/* BODY */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom, #e8f5e9, #f1f8e9);
+    margin: 0;
+}
+
+/* HEADER */
+header {
+    background: linear-gradient(135deg, #2e7d32, #66bb6a);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+
+/* CONTAINER */
+.container {
+    padding: 30px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+/* CARD */
+.card {
+    background: var(--putih);
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    border-left: 6px solid var(--hijau-utama);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* INPUT */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: 1px solid #c8e6c9;
+    outline: none;
+}
+
+/* BUTTON */
+button {
+    background: linear-gradient(135deg, #2e7d32, #66bb6a);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* GALERI */
+.gallery img {
+    width: 100px;
+    border-radius: 10px;
+    margin: 5px;
+    border: 2px solid #c8e6c9;
+}
+
+/* TOMBOL KEMBALI */
+.top-bar {
+    text-align: right;
+    padding: 10px 30px;
+}
+
+.top-bar button {
+    background: #6d4c41;
+}
+
+/* JUDUL */
+h3 {
+    color: #2e7d32;
+}
+
+/* ANIMASI */
+.card {
+    animation: fadeUp 0.7s ease;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.grid img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.grid img:hover {
+    transform: scale(1.05);
+}
+</style>
+
+
+</head>
+
+<body>
+
+<header>
+    <h2>Dashboard Admin</h2>
+</header>
+
+<div style="text-align:right; padding:10px;">
+    <button onclick="kembali()">⬅️ Lihat Website</button>
+</div>
+
+<div class="container">
+
+<!-- EDIT INFORMASI -->
+<div class="card">
+    <h3>Edit Informasi Wisata</h3>
+
+    <textarea id="info"></textarea>
+    <button onclick="simpanInfo()">Simpan</button>
+</div>
+
+<div class="card">
+    <h3>📸 Upload Galeri (Instagram Style)</h3>
+
+    <input type="file" id="fileInput" accept="image/*">
+
+    <img id="preview" style="width:100%; max-width:200px; margin-top:10px; display:none; border-radius:10px;">
+
+    <button onclick="uploadGambar()">Upload</button>
+</div>
+
+<div class="card">
+    <h3>🖼️ Galeri Admin</h3>
+    <div id="galeriGrid" class="grid"></div>
+</div>
+</div>
+
+<script>
+
+// LOAD DATA
+window.onload = function(){
+    document.getElementById("info").value = localStorage.getItem("info") || "";
+
+    tampilGambar();
+}
+
+// SIMPAN INFO
+function simpanInfo(){
+    let info = document.getElementById("info").value;
+    localStorage.setItem("info", info);
+    alert("Informasi disimpan!");
+}
+
+// TAMBAH GAMBAR
+function tambahGambar(){
+    let link = document.getElementById("gambar").value;
+
+    let data = JSON.parse(localStorage.getItem("galeri") || "[]");
+    data.push(link);
+
+    localStorage.setItem("galeri", JSON.stringify(data));
+
+    tampilGambar();
+}
+
+// TAMPIL GAMBAR
+function tampilGambar(){
+    let data = JSON.parse(localStorage.getItem("galeri") || "[]");
+    let html = "";
+
+    data.forEach((g,i)=>{
+        html += `
+        <div>
+            <img src="${g}">
+            <button onclick="hapus(${i})">Hapus</button>
+        </div>
+        `;
+    });
+
+    document.getElementById("listGambar").innerHTML = html;
+}
+
+// HAPUS
+function hapus(i){
+    let data = JSON.parse(localStorage.getItem("galeri"));
+    data.splice(i,1);
+
+    localStorage.setItem("galeri", JSON.stringify(data));
+
+    tampilGambar();
+}
+function kembali(){
+    window.location.href = "index.html";
+}
+</script>
+<script>
+
+let fileInput = document.getElementById("fileInput");
+let preview = document.getElementById("preview");
+
+fileInput.onchange = function(){
+    let file = this.files[0];
+    preview.style.display = "block";
+    preview.src = URL.createObjectURL(file);
+}
+
+function uploadGambar(){
+
+    let file = fileInput.files[0];
+
+    if(!file){
+        alert("Pilih gambar dulu!");
+        return;
+    }
+
+    let reader = new FileReader();
+
+    reader.onload = function(e){
+
+        let data = JSON.parse(localStorage.getItem("galeri") || "[]");
+
+        data.push(e.target.result);
+
+        localStorage.setItem("galeri", JSON.stringify(data));
+
+        tampilGaleri();
+        alert("Upload berhasil!");
+    }
+
+    reader.readAsDataURL(file);
+}
+
+function tampilGaleri(){
+
+    let data = JSON.parse(localStorage.getItem("galeri") || "[]");
+
+    let html = "";
+
+    data.forEach((img, i)=>{
+        html += `
+        <div style="position:relative">
+            <img src="${img}">
+            <button onclick="hapus(${i})"
+            style="position:absolute; top:5px; right:5px; background:red; color:white; border:none; border-radius:5px;">
+            X
+            </button>
+        </div>
+        `;
+    });
+
+    document.getElementById("galeriGrid").innerHTML = html;
+}
+
+function hapus(i){
+    let data = JSON.parse(localStorage.getItem("galeri"));
+    data.splice(i,1);
+    localStorage.setItem("galeri", JSON.stringify(data));
+    tampilGaleri();
+}
+
+window.onload = tampilGaleri;
+
+</script>
+
+</body>
+</html>
